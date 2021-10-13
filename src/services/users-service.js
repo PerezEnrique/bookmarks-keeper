@@ -1,5 +1,6 @@
 const boom = require("@hapi/boom");
 const bcrypt = require("bcrypt");
+const { getLinkPreview } = require("link-preview-js");
 const MongooseLib = require("../lib/mongoose-lib");
 const User = require("../models/users-model");
 const { Bookmark } = require("../models/bookmarks-model");
@@ -49,19 +50,37 @@ module.exports = class UserService {
 	}
 
 	async addBookmark(userId, bookmark) {
+		const { images, description } = await getLinkPreview(bookmark.url);
+
 		const newBookmark = new Bookmark({
+			imageUrl: images[0],
+			description,
 			...bookmark,
 		});
 
 		return await this.library.update(userId, { $push: { bookmarks: newBookmark } });
 	}
 
-	async editBookmark(userId, bookmarkId, bookmark) {
+	async editBookmark(userId, bookmarkId, { name, url }) {
 		const user = await this.getUser(userId);
+		//if user doesn't exist this.getUser will throw the error
+
 		const bookmarkIndex = user.bookmarks.findIndex(
 			(elem) => elem._id.toString() === bookmarkId
 		);
-		user.bookmarks[bookmarkIndex] = bookmark;
+		const bookmark = user.bookmarks[bookmarkIndex];
+
+		if (url) {
+			const { images, description } = await getLinkPreview(url);
+			bookmark.url = url;
+			bookmark.imageUrl = images[0];
+			bookmark.description = description;
+		}
+
+		if (name) {
+			bookmark.name = name;
+		}
+
 		return await user.save();
 	}
 
