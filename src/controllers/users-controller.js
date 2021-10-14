@@ -1,5 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const validation = require("../middlewares/validation-handler");
+const {
+	createUser,
+	updateUser,
+} = require("../utils/validation-schemas/users-validation-schemas");
+const {
+	addBookmark,
+	editBookmark,
+} = require("../utils/validation-schemas/bookmarks-validation-schemas");
 const UserService = require("../services/users-service");
 const userService = new UserService();
 
@@ -32,7 +41,7 @@ router.get("/", async (req, res, next) => {
 //full path: /users/
 //method: post
 //desc: creates new user
-router.post("/", async (req, res, next) => {
+router.post("/", validation(createUser), async (req, res, next) => {
 	const { body } = req;
 
 	try {
@@ -46,7 +55,7 @@ router.post("/", async (req, res, next) => {
 //full path: /users/:id/add-bookmark
 //method: put
 //desc: adds bookmark to user's bookmark list
-router.put("/:id/add-bookmark", async (req, res, next) => {
+router.put("/:id/add-bookmark", validation(addBookmark), async (req, res, next) => {
 	const {
 		params: { id: userId },
 		body,
@@ -77,24 +86,28 @@ router.put("/:id/remove-bookmark/:bookmarkId", async (req, res, next) => {
 //full path: /users/:id/edit-bookmark/:bookmarkId
 //method: put
 //desc: edit one of user's bookmarks
-router.put("/:id/edit-bookmark/:bookmarkId", async (req, res, next) => {
-	const {
-		params: { id: userId, bookmarkId },
-		body,
-	} = req;
+router.put(
+	"/:id/edit-bookmark/:bookmarkId",
+	validation(editBookmark),
+	async (req, res, next) => {
+		const {
+			params: { id: userId, bookmarkId },
+			body,
+		} = req;
 
-	try {
-		const updatedUser = await userService.editBookmark(userId, bookmarkId, body);
-		res.status(201).json(updatedUser);
-	} catch (err) {
-		next(err);
+		try {
+			const updatedUser = await userService.editBookmark(userId, bookmarkId, body);
+			res.status(201).json(updatedUser);
+		} catch (err) {
+			next(err);
+		}
 	}
-});
+);
 
 //full path: /users/:id
 //method: put
 //desc: updates user's info
-router.put("/:id", async (req, res, next) => {
+router.put("/:id", validation(updateUser), async (req, res, next) => {
 	const {
 		params: { id: userId },
 		body,
