@@ -2,22 +2,24 @@ const boom = require("@hapi/boom");
 const bcrypt = require("bcrypt");
 const { getLinkPreview } = require("link-preview-js");
 const MongooseLib = require("../lib/mongoose-lib");
-const User = require("../models/users-model");
-const { Bookmark } = require("../models/bookmarks-model");
+const User = require("../utils/models/users-model");
+const { Bookmark } = require("../utils/models/bookmarks-model");
 
 module.exports = class UserService {
 	constructor() {
 		this.library = new MongooseLib(User);
 	}
 
-	async getAllUsers() {
+	getAllUsers() {
 		return this.library.getAll();
 	}
 
-	async getUser(id) {
-		const user = await this.library.getById(id);
-		if (!user) throw boom.notFound("Couldn't find user with provided id");
-		return user;
+	getUserById(id) {
+		return this.library.getById(id);
+	}
+
+	getUserByQuery(query) {
+		return this.library.getByQuery(query);
 	}
 
 	async createUser({ username, password }) {
@@ -30,8 +32,8 @@ module.exports = class UserService {
 	}
 
 	async updateUser(id, { username, password }) {
-		const user = await this.getUser(id);
-		//if user doesn't exist this.getUser will throw the error
+		const user = await this.library.getByid(id);
+		if (!user) throw boom.notFound("Cound't find user with provided id");
 
 		if (username) {
 			const usernameAlreadyExist = await this.library.getByQuery({ username });
@@ -62,8 +64,8 @@ module.exports = class UserService {
 	}
 
 	async editBookmark(userId, bookmarkId, { name, url }) {
-		const user = await this.getUser(userId);
-		//if user doesn't exist this.getUser will throw the error
+		const user = await this.library.getByid(userId);
+		if (!user) throw boom.notFound("Cound't find user with provided id");
 
 		const bookmarkIndex = user.bookmarks.findIndex(
 			(elem) => elem._id.toString() === bookmarkId

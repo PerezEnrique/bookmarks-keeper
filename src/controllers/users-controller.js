@@ -1,5 +1,6 @@
-const express = require("express");
-const router = express.Router();
+const router = require("express").Router();
+const boom = require("@hapi/boom");
+const auth = require("../middlewares/auth");
 const validation = require("../middlewares/validation-handler");
 const {
 	createUser,
@@ -10,7 +11,7 @@ const {
 	editBookmark,
 } = require("../utils/validation-schemas/bookmarks-validation-schemas");
 const UserService = require("../services/users-service");
-const userService = new UserService();
+const service = new UserService();
 
 //full path: /users/:id
 //method: get
@@ -19,7 +20,8 @@ router.get("/:id", async (req, res, next) => {
 	const { id } = req.params;
 
 	try {
-		const user = await userService.getUser(id);
+		const user = await service.getUserById(id);
+		if (!user) throw boom.notFound("Cound't find user with provided id");
 		res.status(200).json(user);
 	} catch (err) {
 		next(err);
@@ -31,7 +33,7 @@ router.get("/:id", async (req, res, next) => {
 //desc: gets all users
 router.get("/", async (req, res, next) => {
 	try {
-		const users = await userService.getAllUsers();
+		const users = await service.getAllUsers();
 		res.status(200).json(users);
 	} catch (err) {
 		next(err);
@@ -45,8 +47,14 @@ router.post("/", validation(createUser), async (req, res, next) => {
 	const { body } = req;
 
 	try {
-		const createdUser = await userService.createUser(body);
-		res.status(201).json(createdUser);
+		const createdUser = await service.createUser(body);
+		const token = createdUser.generateAuthToken();
+		const userToReturn = {
+			_id: createdUser._id,
+			username: createdUser.username,
+			bookmarks: createdUser.bookmarks,
+		};
+		res.status(201).header("Authorization", `Bearer ${token}`).json(userToReturn);
 	} catch (err) {
 		next(err);
 	}
@@ -55,14 +63,14 @@ router.post("/", validation(createUser), async (req, res, next) => {
 //full path: /users/:id/add-bookmark
 //method: put
 //desc: adds bookmark to user's bookmark list
-router.put("/:id/add-bookmark", validation(addBookmark), async (req, res, next) => {
+router.put("/:id/add-bookmark", auth, validation(addBookmark), async (req, res, next) => {
 	const {
 		params: { id: userId },
 		body,
 	} = req;
 
 	try {
-		const updatedUser = await userService.addBookmark(userId, body);
+		const updatedUser = await service.addBookmark(userId, body);
 		res.status(201).json(updatedUser);
 	} catch (err) {
 		next(err);
@@ -72,11 +80,11 @@ router.put("/:id/add-bookmark", validation(addBookmark), async (req, res, next) 
 //full path: /users/:id/remove-bookmark
 //method: put
 //desc: remove a bookmark from user's bookmark list
-router.put("/:id/remove-bookmark/:bookmarkId", async (req, res, next) => {
+router.put("/:id/remove-bookmark/:bookmarkId", auth, async (req, res, next) => {
 	const { id: userId, bookmarkId } = req.params;
 
 	try {
-		const updatedUser = await userService.removeBookmark(userId, bookmarkId);
+		const updatedUser = await service.removeBookmark(userId, bookmarkId);
 		res.status(201).json(updatedUser);
 	} catch (err) {
 		next(err);
@@ -88,6 +96,7 @@ router.put("/:id/remove-bookmark/:bookmarkId", async (req, res, next) => {
 //desc: edit one of user's bookmarks
 router.put(
 	"/:id/edit-bookmark/:bookmarkId",
+	auth,
 	validation(editBookmark),
 	async (req, res, next) => {
 		const {
@@ -96,7 +105,7 @@ router.put(
 		} = req;
 
 		try {
-			const updatedUser = await userService.editBookmark(userId, bookmarkId, body);
+			const updatedUser = await service.editBookmark(userId, bookmarkId, body);
 			res.status(201).json(updatedUser);
 		} catch (err) {
 			next(err);
@@ -107,14 +116,14 @@ router.put(
 //full path: /users/:id
 //method: put
 //desc: updates user's info
-router.put("/:id", validation(updateUser), async (req, res, next) => {
+router.put("/:id", auth, validation(updateUser), async (req, res, next) => {
 	const {
 		params: { id: userId },
 		body,
 	} = req;
 
 	try {
-		const updatedUser = await userService.updateUser(userId, body);
+		const updatedUser = await service.updateUser(userId, body);
 		res.status(201).json(updatedUser);
 	} catch (err) {
 		next(err);
@@ -124,11 +133,11 @@ router.put("/:id", validation(updateUser), async (req, res, next) => {
 //full path: /users/:id
 //method: delete
 //desc: deletes an user
-router.delete("/:id", async (req, res, next) => {
+router.delete("/:id", auth, async (req, res, next) => {
 	const { id: userId } = req.params;
 
 	try {
-		const result = await userService.deleteUser(userId);
+		const result = await service.deleteUser(userId);
 		res.status(200).json(result);
 	} catch (err) {
 		next(err);
