@@ -13,33 +13,6 @@ const {
 const UserService = require("../services/users-service");
 const service = new UserService();
 
-//full path: /users/:id
-//method: get
-//desc: gets user by id
-router.get("/:id", async (req, res, next) => {
-	const { id } = req.params;
-
-	try {
-		const user = await service.getUserById(id);
-		if (!user) throw boom.notFound("Cound't find user with provided id");
-		res.status(200).json(user);
-	} catch (err) {
-		next(err);
-	}
-});
-
-//full path: /users/
-//method: get
-//desc: gets all users
-router.get("/", async (req, res, next) => {
-	try {
-		const users = await service.getAllUsers();
-		res.status(200).json(users);
-	} catch (err) {
-		next(err);
-	}
-});
-
 //full path: /users/
 //method: post
 //desc: creates new user
