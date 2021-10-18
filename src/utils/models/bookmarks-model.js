@@ -6,6 +6,7 @@ const bookmarkSchema = new mongoose.Schema(
 		url: { type: String, required: true, minlength: 4 },
 		description: { type: String, maxlength: 255 },
 		imageUrl: { type: String },
+		tags: [{ type: String, maxlength: 50 }],
 	},
 	{ timestamps: true }
 );

@@ -1,15 +1,10 @@
 const router = require("express").Router();
-const boom = require("@hapi/boom");
 const auth = require("../middlewares/auth");
 const validation = require("../middlewares/validation-handler");
 const {
 	createUser,
 	updateUser,
 } = require("../utils/validation-schemas/users-validation-schemas");
-const {
-	addBookmark,
-	editBookmark,
-} = require("../utils/validation-schemas/bookmarks-validation-schemas");
 const UserService = require("../services/users-service");
 const service = new UserService();
 
@@ -32,59 +27,6 @@ router.post("/", validation(createUser), async (req, res, next) => {
 		next(err);
 	}
 });
-
-//full path: /users/:id/add-bookmark
-//method: put
-//desc: adds bookmark to user's bookmark list
-router.put("/:id/add-bookmark", auth, validation(addBookmark), async (req, res, next) => {
-	const {
-		params: { id: userId },
-		body,
-	} = req;
-
-	try {
-		const updatedUser = await service.addBookmark(userId, body);
-		res.status(201).json(updatedUser);
-	} catch (err) {
-		next(err);
-	}
-});
-
-//full path: /users/:id/remove-bookmark
-//method: put
-//desc: remove a bookmark from user's bookmark list
-router.put("/:id/remove-bookmark/:bookmarkId", auth, async (req, res, next) => {
-	const { id: userId, bookmarkId } = req.params;
-
-	try {
-		const updatedUser = await service.removeBookmark(userId, bookmarkId);
-		res.status(201).json(updatedUser);
-	} catch (err) {
-		next(err);
-	}
-});
-
-//full path: /users/:id/edit-bookmark/:bookmarkId
-//method: put
-//desc: edit one of user's bookmarks
-router.put(
-	"/:id/edit-bookmark/:bookmarkId",
-	auth,
-	validation(editBookmark),
-	async (req, res, next) => {
-		const {
-			params: { id: userId, bookmarkId },
-			body,
-		} = req;
-
-		try {
-			const updatedUser = await service.editBookmark(userId, bookmarkId, body);
-			res.status(201).json(updatedUser);
-		} catch (err) {
-			next(err);
-		}
-	}
-);
 
 //full path: /users/:id
 //method: put
