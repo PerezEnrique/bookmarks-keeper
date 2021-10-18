@@ -35,10 +35,7 @@ module.exports = class BookmarkService {
 		const user = await this.library.getById(userId);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
-		const bookmarkIndex = user.bookmarks.findIndex(
-			(elem) => elem._id.toString() === bookmarkId
-		);
-		const bookmark = user.bookmarks[bookmarkIndex];
+		const bookmark = user.bookmarks.find((bookmark) => bookmark._id == bookmarkId); //using == because objectId is not a string
 
 		if (url) {
 			const { images, description } = await getLinkPreview(url);
