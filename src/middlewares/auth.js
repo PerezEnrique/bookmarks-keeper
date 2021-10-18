@@ -3,7 +3,8 @@ const boom = require("@hapi/boom");
 const { jwtPrivateKey } = require("../config/app-config");
 
 module.exports = function (req, res, next) {
-	const token = req.header("Authorization");
+	const headerData = req.header("Authorization");
+	const token = headerData.replace("Bearer", "").trim();
 	if (!token) throw boom.unauthorized();
 
 	//if the token is not valid, jwt.verify() will throw an exception, that's why we need a try catch block
