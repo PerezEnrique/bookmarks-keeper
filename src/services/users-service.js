@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const MongooseLib = require("../lib/mongoose-lib");
 const User = require("../utils/models/users-model");
 
-module.exports = class UserService {
+module.exports = class UsersService {
 	constructor() {
 		this.library = new MongooseLib(User);
 	}

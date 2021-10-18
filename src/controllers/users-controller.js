@@ -5,8 +5,8 @@ const {
 	createUser,
 	updateUser,
 } = require("../utils/validation-schemas/users-validation-schemas");
-const UserService = require("../services/users-service");
-const service = new UserService();
+const UsersService = require("../services/users-service");
+const service = new UsersService();
 
 //full path: /users/
 //method: post
