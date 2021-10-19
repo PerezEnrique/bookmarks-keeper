@@ -12,9 +12,7 @@ module.exports = class BookmarkService {
 		const user = await this.library.getById(userId);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
-		const bookmarks = user.bookmarks.filter((bookmark) => {
-			bookmark.tag === tag;
-		});
+		const bookmarks = user.bookmarks.filter((bookmark) => bookmark.tags.includes(tag));
 
 		return { bookmarks };
 	}
