@@ -8,6 +8,6 @@ const createUser = Joi.object({
 const updateUser = Joi.object({
 	username: Joi.string().max(30).label("Username"),
 	password: Joi.string().min(5).max(1024).label("Password"),
-});
+}).or("username", "password");
 
 module.exports = { createUser, updateUser };
