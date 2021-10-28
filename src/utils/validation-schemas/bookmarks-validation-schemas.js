@@ -7,9 +7,9 @@ const addBookmark = Joi.object({
 });
 
 const editBookmark = Joi.object({
-	name: Joi.string().max(50),
-	url: Joi.string().uri({ allowQuerySquareBrackets: true }),
-	tags: Joi.array().items(Joi.string().max(50)),
-});
+	name: Joi.string().max(50).empty(""),
+	url: Joi.string().uri({ allowQuerySquareBrackets: true }).empty(""),
+	tags: Joi.array().items(Joi.string().max(50).empty("")),
+}).or("name", "url", "tags");
 
 module.exports = { addBookmark, editBookmark };

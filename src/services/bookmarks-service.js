@@ -1,4 +1,5 @@
 const { getLinkPreview } = require("link-preview-js");
+const boom = require("@hapi/boom");
 const MongooseLib = require("../lib/mongoose-lib");
 const User = require("../utils/models/users-model");
 const { Bookmark } = require("../utils/models/bookmarks-model");
@@ -21,8 +22,8 @@ module.exports = class BookmarkService {
 		const { images, description } = await getLinkPreview(bookmark.url);
 
 		const newBookmark = new Bookmark({
-			imageUrl: images[0],
-			description,
+			imageUrl: images[0] ? images[0] : "not available",
+			description: description ? description : "not available",
 			...bookmark,
 		});
 
@@ -34,12 +35,13 @@ module.exports = class BookmarkService {
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
 		const bookmark = user.bookmarks.find((bookmark) => bookmark._id == bookmarkId); //using == because objectId is not a string
+		if (!bookmark) throw boom.notFound("Couldn't find bookmark with provided id");
 
 		if (url) {
 			const { images, description } = await getLinkPreview(url);
 			bookmark.url = url;
-			bookmark.imageUrl = images[0];
-			bookmark.description = description;
+			bookmark.imageUrl = images[0] ? images[0] : "not available";
+			bookmark.description = description ? description : "not available";
 		}
 
 		if (name) {

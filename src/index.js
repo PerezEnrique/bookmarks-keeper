@@ -15,4 +15,8 @@ router(app);
 app.use(wrapError);
 app.use(errorHandler);
 
-app.listen(port, () => console.log(`Server runing in ${nodeEnv} mode on port ${port}`));
+const server = app.listen(port, () =>
+	console.log(`Server runing in ${nodeEnv} mode on port ${port}`)
+);
+
+module.exports = server;

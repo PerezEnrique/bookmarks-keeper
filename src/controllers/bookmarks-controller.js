@@ -71,7 +71,7 @@ router.delete("/:id", auth, async (req, res, next) => {
 
 	try {
 		const result = await service.removeBookmark(userId, bookmarkId);
-		res.status(201).json(result);
+		res.status(200).json(result);
 	} catch (err) {
 		next(err);
 	}

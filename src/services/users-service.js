@@ -30,7 +30,7 @@ module.exports = class UsersService {
 	}
 
 	async updateUser(id, { username, password }) {
-		const user = await this.library.getByid(id);
+		const user = await this.library.getById(id);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
 		if (username) {
