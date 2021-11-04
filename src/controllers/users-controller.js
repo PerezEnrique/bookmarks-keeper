@@ -22,7 +22,11 @@ router.post("/", validation(createUser), async (req, res, next) => {
 			username: createdUser.username,
 			bookmarks: createdUser.bookmarks,
 		};
-		res.status(201).header("Authorization", `Bearer ${token}`).json(userToReturn);
+		res
+			.status(201)
+			.header("authorization", `Bearer ${token}`)
+			.header("access-control-expose-headers", "authorization")
+			.json(userToReturn);
 	} catch (err) {
 		next(err);
 	}
