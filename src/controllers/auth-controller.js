@@ -1,7 +1,25 @@
 const router = require("express").Router();
 const passport = require("passport");
+const auth = require("../middlewares/auth");
 const validation = require("../middlewares/validation-handler");
 const { createUser } = require("../utils/validation-schemas/users-validation-schemas");
+const UsersService = require("../services/users-service");
+const service = new UsersService();
+
+router.get("/current-user", auth, async (req, res) => {
+	try {
+		//req.user must have the token data at this point
+		const currentUser = await service.getUserById(req.user.sub);
+		const userToReturn = {
+			_id: currentUser._id,
+			username: currentUser.username,
+			bookmarks: currentUser.bookmarks,
+		};
+		res.json(userToReturn);
+	} catch (err) {
+		next(err);
+	}
+});
 
 //full path: /auth/login
 //method: post
@@ -19,7 +37,10 @@ router.post(
 			username: user.username,
 			bookmarks: user.bookmarks,
 		};
-		res.header("Authorization", `Bearer ${token}`).json(userToReturn);
+		res
+			.header("authorization", `Bearer ${token}`)
+			.header("access-control-expose-headers", "authorization")
+			.json(userToReturn);
 	}
 );
 
