@@ -3,7 +3,7 @@ const boom = require("@hapi/boom");
 const { jwtPrivateKey } = require("../config/app-config");
 
 module.exports = function (req, res, next) {
-	const headerData = req.header("Authorization");
+	const headerData = req.header("authorization");
 	if (!headerData) throw boom.unauthorized();
 	const token = headerData.replace("Bearer", "").trim();
 	if (!token) throw boom.unauthorized();
