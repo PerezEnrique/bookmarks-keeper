@@ -19,10 +19,11 @@ module.exports = class BookmarkService {
 	}
 
 	async addBookmark(userId, bookmark) {
-		const { images, description } = await getLinkPreview(bookmark.url);
+		const { images, title, description } = await getLinkPreview(bookmark.url);
 
 		const newBookmark = new Bookmark({
 			imageUrl: images[0] ? images[0] : "not available",
+			title: title ? title : "not available",
 			description: description ? description : "not available",
 			...bookmark,
 		});
@@ -38,9 +39,10 @@ module.exports = class BookmarkService {
 		if (!bookmark) throw boom.notFound("Couldn't find bookmark with provided id");
 
 		if (url) {
-			const { images, description } = await getLinkPreview(url);
+			const { images, title, description } = await getLinkPreview(url);
 			bookmark.url = url;
 			bookmark.imageUrl = images[0] ? images[0] : "not available";
+			bookmark.title = title ? title : "not available";
 			bookmark.description = description ? description : "not available";
 		}
 
