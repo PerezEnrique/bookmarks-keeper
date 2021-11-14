@@ -57,11 +57,13 @@ module.exports = class BookmarkService {
 		return await user.save();
 	}
 
-	async removeBookmark(userId, bookmarkId) {
-		await this.library.update(userId, {
-			$pull: { bookmarks: { _id: bookmarkId } },
-		});
-
-		return { message: "Bookmark successfully removed" };
+	removeBookmark(userId, bookmarkId) {
+		return this.library.update(
+			userId,
+			{
+				$pull: { bookmarks: { _id: bookmarkId } },
+			},
+			{ new: true }
+		);
 	}
 };
