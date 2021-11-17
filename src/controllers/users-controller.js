@@ -35,15 +35,25 @@ router.post("/", validation(createUser), async (req, res, next) => {
 //full path: /users/:id
 //method: put
 //desc: updates user's info
-router.put("/:id", auth, validation(updateUser), async (req, res, next) => {
+router.put("/", auth, validation(updateUser), async (req, res, next) => {
 	const {
-		params: { id: userId },
+		user: { sub: userId },
 		body,
 	} = req;
 
 	try {
 		const updatedUser = await service.updateUser(userId, body);
-		res.status(201).json(updatedUser);
+		const token = updatedUser.generateAuthToken();
+		const userToReturn = {
+			_id: updatedUser._id,
+			username: updatedUser.username,
+			bookmarks: updatedUser.bookmarks,
+		};
+		res
+			.status(201)
+			.header("authorization", `Bearer ${token}`)
+			.header("access-control-expose-headers", "authorization")
+			.json(userToReturn);
 	} catch (err) {
 		next(err);
 	}
