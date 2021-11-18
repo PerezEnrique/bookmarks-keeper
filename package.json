@@ -9,7 +9,7 @@
 		"test": "jest --watchAll"
 	},
 	"engines": {
-		"node": "14.8.1"
+		"node": "14.18.1"
 	},
 	"author": "Jesus Enrique Perez",
 	"license": "ISC",
