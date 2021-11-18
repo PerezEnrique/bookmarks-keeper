@@ -4,8 +4,12 @@
 	"description": "A simple api to store bookmarks",
 	"main": "index.js",
 	"scripts": {
+		"start": "node src/index.js",
 		"dev": "nodemon src/",
 		"test": "jest --watchAll"
+	},
+	"engines": {
+		"node": "14.8.1"
 	},
 	"author": "Jesus Enrique Perez",
 	"license": "ISC",
