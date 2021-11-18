@@ -7,9 +7,12 @@ const service = new UserService();
 module.exports = new LocalStrategy(async (username, password, done) => {
 	try {
 		const user = await service.getUserByQuery({ username });
-		if (!user) return done(boom.unauthorized(), false);
+		if (!user) return done(boom.unauthorized("Invalid username or password"), false);
+
 		const passwordMatch = await bcrypt.compare(password, user.password);
-		if (!passwordMatch) return done(boom.unauthorized(), false);
+		if (!passwordMatch)
+			return done(boom.unauthorized("Invalid username or password"), false);
+
 		return done(null, user);
 	} catch (err) {
 		return done(err);
