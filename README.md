@@ -1,6 +1,6 @@
-# Bookmark-keeper (backend)
+# Bookmarks-keeper (backend)
 
-Bookmark-keeper app backend.
+Bookmarks-keeper app backend.
 
 ---
 
@@ -36,17 +36,29 @@ app. For that, I used the MERN stack, but divided the project in API and
 - Passport.js
 - JWT
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#bookmarks-keeper-backend)
 
 ---
 
 ## How To Use
 
-#### Installation
+#### Project Installation
 
 After running `npm install` to install the app dependencies, check the .env.example file to see what env variables you'll need to set up before starting the aplication. This is the link to the [client side](https://github.com/PerezEnrique/bookmarks-keeper-client) I built for this api.
 
-[Back To The Top](#read-me-template)
+To install app dependencies.
+
+    npm install
+
+To start development server
+
+    npm run dev
+
+to start the application
+
+    npm start
+
+[Back To The Top](#bookmarks-keeper-backend)
 
 ---
 
@@ -56,4 +68,4 @@ After running `npm install` to install the app dependencies, check the .env.exam
 - [LinkedIn](https://www.linkedin.com/in/enrique-perez28/)
 - [Twitter](https://twitter.com/jesus93enrique)
 
-[Back To The Top](#read-me-template)
+[Back To The Top](#bookmarks-keeper-backend)
