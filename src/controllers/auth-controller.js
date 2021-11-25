@@ -6,6 +6,9 @@ const { createUser } = require("../utils/validation-schemas/users-validation-sch
 const UsersService = require("../services/users-service");
 const service = new UsersService();
 
+//full path: /api/auth/current-user
+//method: post
+//desc: authenticates user
 router.get("/current-user", auth, async (req, res) => {
 	try {
 		//req.user must have the token data at this point
@@ -21,7 +24,7 @@ router.get("/current-user", auth, async (req, res) => {
 	}
 });
 
-//full path: /auth/login
+//full path: /api/auth/login
 //method: post
 //desc: authenticates user
 
