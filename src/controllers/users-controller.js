@@ -8,7 +8,7 @@ const {
 const UsersService = require("../services/users-service");
 const service = new UsersService();
 
-//full path: /users/
+//full path: /api/users/
 //method: post
 //desc: creates new user
 router.post("/", validation(createUser), async (req, res, next) => {
@@ -32,7 +32,7 @@ router.post("/", validation(createUser), async (req, res, next) => {
 	}
 });
 
-//full path: /users/:id
+//full path: /api/users/:id
 //method: put
 //desc: updates user's info
 router.put("/", auth, validation(updateUser), async (req, res, next) => {
@@ -59,7 +59,7 @@ router.put("/", auth, validation(updateUser), async (req, res, next) => {
 	}
 });
 
-//full path: /users/:id
+//full path: /api/users/:id
 //method: delete
 //desc: deletes an user
 router.delete("/:id", auth, async (req, res, next) => {

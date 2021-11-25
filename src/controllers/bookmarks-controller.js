@@ -8,7 +8,7 @@ const {
 const BookmarksService = require("../services/bookmarks-service");
 const service = new BookmarksService();
 
-//full path: /bookmarks
+//full path: /api/bookmarks
 //method: get
 //desc: gets bookmarks by tag
 router.get("/byTag", auth, async (req, res, next) => {
@@ -25,7 +25,7 @@ router.get("/byTag", auth, async (req, res, next) => {
 	}
 });
 
-//full path: /bookmarks
+//full path: /api/bookmarks
 //method: post
 //desc: adds bookmark to user's bookmark list
 router.post("/", auth, validation(addBookmark), async (req, res, next) => {
@@ -42,7 +42,7 @@ router.post("/", auth, validation(addBookmark), async (req, res, next) => {
 	}
 });
 
-//full path: /bookmarks/:id
+//full path: /api/bookmarks/:id
 //method: put
 //desc: edit one of user's bookmarks
 router.put("/:id", auth, validation(editBookmark), async (req, res, next) => {
@@ -60,7 +60,7 @@ router.put("/:id", auth, validation(editBookmark), async (req, res, next) => {
 	}
 });
 
-//full path: /bookmarks/:id
+//full path: /api/bookmarks/:id
 //method: delete
 //desc: remove one of user's bookmarks
 router.delete("/:id", auth, async (req, res, next) => {
