@@ -33,7 +33,7 @@ module.exports = class UsersService {
 		const user = await this.library.getById(id);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
-		if (username) {
+		if (username && username !== user.username) {
 			const usernameAlreadyExist = await this.library.getByQuery({ username });
 			if (usernameAlreadyExist)
 				throw boom.badRequest("An user with provided username already exists");
