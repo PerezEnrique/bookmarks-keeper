@@ -32,7 +32,7 @@ router.post("/", validation(createUser), async (req, res, next) => {
 	}
 });
 
-//full path: /api/users/:id
+//full path: /api/users
 //method: put
 //desc: updates user's info
 router.put("/", auth, validation(updateUser), async (req, res, next) => {
