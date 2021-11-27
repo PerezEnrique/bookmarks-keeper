@@ -3,7 +3,7 @@ const { nodeEnv } = require("../config/app-config");
 
 function withErrorStack(error, stack) {
 	if (nodeEnv !== "production") return { error, stack };
-	return error;
+	return { error };
 }
 
 //errorHandler() needs some properties that only boom errors have, that's why in this middleware we need to make all errors boom errors
