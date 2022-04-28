@@ -1,5 +1,12 @@
-const mongoose = require("mongoose");
-const { dbUri } = require("./app-config");
+import mongoose from "mongoose";
+import appCongif from "./app-config";
+
+const {dbUri} = appCongif;
+
+if(!dbUri){
+	console.log("Fatal error: Database URI is not definned");
+	process.exit(1);
+}
 
 module.exports = async function () {
 	try {

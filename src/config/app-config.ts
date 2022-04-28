@@ -1,6 +1,6 @@
-require("dotenv").config();
+import 'dotenv/config';
 
-module.exports = {
+export default {
 	nodeEnv: process.env.NODE_ENV,
 	clientOrigin: process.env.CLIENT_ORIGIN,
 	port: process.env.PORT || 5000,

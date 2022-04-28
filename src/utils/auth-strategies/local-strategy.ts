@@ -1,10 +1,11 @@
-const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
-const boom = require("@hapi/boom");
-const UserService = require("../../services/users-service");
+import { Strategy as LocalStrategy } from "passport-local";
+import bcrypt from "bcrypt";
+import boom from "@hapi/boom";
+import UserService from "../../services/users-service";
+
 const service = new UserService();
 
-module.exports = new LocalStrategy(async (username, password, done) => {
+export default new LocalStrategy(async (username, password, done) => {
 	try {
 		const user = await service.getUserByQuery({ username });
 		if (!user) return done(boom.unauthorized("Invalid username or password"), false);

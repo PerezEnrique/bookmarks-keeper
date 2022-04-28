@@ -6,7 +6,8 @@
 	"scripts": {
 		"start": "node src/index.js",
 		"dev": "nodemon src/",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"tsc": "tsc"
 	},
 	"engines": {
 		"node": "14.18.1"
@@ -15,6 +16,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@hapi/boom": "^9.1.4",
+		"@types/passport-local": "^1.0.34",
 		"bcrypt": "^5.0.1",
 		"cors": "^2.8.5",
 		"dotenv": "^10.0.0",
@@ -28,6 +30,9 @@
 		"passport-local": "^1.0.0"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.13"
+		"@types/bcrypt": "^5.0.0",
+		"@types/passport": "^1.0.7",
+		"nodemon": "^2.0.13",
+		"typescript": "^4.6.3"
 	}
 }

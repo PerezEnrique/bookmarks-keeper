@@ -1,17 +1,23 @@
-module.exports = class MongooseLib {
+import IdbLibrary from "../utils/interfaces/IdbLibrary";
+
+export default class MongooseLib implements IdbLibrary {
 	constructor(model) {
 		this.model = model;
 	}
 
-	getAll(query = {}) {
+	get() {
 		return this.model.find(query);
 	}
 
-	getById(id) {
+	getOne(query: string) {
+		return this.model.findOne(query)
+	}
+
+	getById(id: string) {
 		return this.model.findById(id);
 	}
 
-	getByQuery(query) {
+	getOneByQuery(query) {
 		return this.model.findOne(query);
 	}
 
