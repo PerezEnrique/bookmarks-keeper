@@ -1,15 +1,19 @@
-const { getLinkPreview } = require("link-preview-js");
-const boom = require("@hapi/boom");
-const MongooseLib = require("../lib/mongoose-lib");
-const User = require("../utils/models/users-model");
-const { Bookmark } = require("../utils/models/bookmarks-model");
+import { getLinkPreview } from "link-preview-js";
+import boom from "@hapi/boom";
+import MongooseLib from "../lib/mongoose-lib";
+import PasswordEncrypter from "../lib/password-encrypter"; 
+import User from "../utils/models/users-model";
+import Bookmark from "../utils/models/bookmarks-model";
+import {TUser} from "../utils/types/user.type";
+import { TBookmark } from "../utils/types/bookmark.type";
 
 module.exports = class BookmarkService {
+	library;
 	constructor() {
-		this.library = new MongooseLib(User);
+		this.library = new MongooseLib<TUser>(User);
 	}
 
-	async getBookmarksByTag(userId, tag) {
+	async getBookmarksByTag(userId: string, tag: string) {
 		const user = await this.library.getById(userId);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
@@ -18,20 +22,20 @@ module.exports = class BookmarkService {
 		return { bookmarks };
 	}
 
-	async addBookmark(userId, bookmark) {
-		const { images, title, description } = await getLinkPreview(bookmark.url);
+	async addBookmark(userId: string, bookmark: TBookmark) {
+		const { images, title, description } = await getLinkPreview(bookmark.url) as any;
 
 		const newBookmark = new Bookmark({
+			...bookmark,
 			imageUrl: images[0] ? images[0] : "not available",
 			title: title ? title : "not available",
 			description: description ? description : "not available",
-			...bookmark,
 		});
 
 		return await this.library.update(userId, { $push: { bookmarks: newBookmark } });
 	}
 
-	async editBookmark(userId, bookmarkId, { name, url, tags }) {
+	async editBookmark(userId: string, bookmarkId: string, { name, url, tags }: TBookmark) {
 		const user = await this.library.getById(userId);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 
@@ -39,7 +43,7 @@ module.exports = class BookmarkService {
 		if (!bookmark) throw boom.notFound("Couldn't find bookmark with provided id");
 
 		if (url) {
-			const { images, title, description } = await getLinkPreview(url);
+			const { images, title, description } = await getLinkPreview(url) as any;
 			bookmark.url = url;
 			bookmark.imageUrl = images[0] ? images[0] : "not available";
 			bookmark.title = title ? title : "not available";
@@ -57,13 +61,12 @@ module.exports = class BookmarkService {
 		return await user.save();
 	}
 
-	removeBookmark(userId, bookmarkId) {
+	removeBookmark(userId: string, bookmarkId: string) {
 		return this.library.update(
 			userId,
 			{
 				$pull: { bookmarks: { _id: bookmarkId } },
 			},
-			{ new: true }
 		);
 	}
 };
