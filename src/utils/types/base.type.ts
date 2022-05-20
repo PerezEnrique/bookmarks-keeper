@@ -1,5 +1,6 @@
 export type BaseModel = {
-    _id: string | number
+    _id: string
     createdAt?: Date
     updatedAt?: Date
+    generateAuthToken()
 }

@@ -6,3 +6,5 @@ export type TUser = BaseModel & {
     password: string
     bookmarks: TBookmark[]
 }
+
+export type CreateUserDTO = Omit<TUser, "_id" | "createdAt" | "updatedAt" | "bookmarks">;

@@ -1,10 +1,11 @@
-const router = require("express").Router();
-const auth = require("../middlewares/auth");
+import express from "express";
+import auth from "../middlewares/auth";
 const validation = require("../middlewares/validation-handler");
 const {
 	createUser,
 	updateUser,
 } = require("../utils/validation-schemas/users-validation-schemas");
+const router = express.Router()
 const UsersService = require("../services/users-service");
 const service = new UsersService();
 
