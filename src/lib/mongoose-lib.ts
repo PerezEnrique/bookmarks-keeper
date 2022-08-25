@@ -19,8 +19,8 @@ export default class MongooseLib<T> implements IDbLib {
 	}
 
 	create(data: AnyKeys<T>) {
-		const newUser = new this.model(data);
-		return newUser.save();
+		const newDocument = new this.model(data);
+		return newDocument.save();
 	}
 
 	update(id: string, data: UpdateQuery<T>) {
