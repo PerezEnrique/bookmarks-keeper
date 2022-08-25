@@ -2,8 +2,8 @@ import { getLinkPreview } from "link-preview-js";
 import boom from "@hapi/boom";
 import MongooseLib from "../lib/mongoose-lib";
 import PasswordEncrypter from "../lib/password-encrypter"; 
-import User from "../utils/models/users-model";
-import Bookmark from "../utils/models/bookmarks-model";
+import User from "../models/users-model";
+import Bookmark from "../models/bookmarks-model";
 import {TUser} from "../utils/types/user.type";
 import { TBookmark } from "../utils/types/bookmark.type";
 

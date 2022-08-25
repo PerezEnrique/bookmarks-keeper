@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import appConfig from "../../config/app-config";
+import appConfig from "../config/app-config";
 import { bookmarkSchema } from "./bookmarks-model";
-import { TUser } from "../types/user.type";
+import { TUser } from "../utils/types/user.type";
 
 const { jwtPrivateKey } = appConfig;
 
