@@ -1,11 +1,10 @@
 import { getLinkPreview } from "link-preview-js";
 import boom from "@hapi/boom";
 import MongooseLib from "../lib/mongoose-lib";
-import PasswordEncrypter from "../lib/password-encrypter"; 
 import User from "../models/users-model";
 import Bookmark from "../models/bookmarks-model";
-import {TUser} from "../utils/types/user.type";
-import { TBookmark } from "../utils/types/bookmark.type";
+import type {TUser} from "../utils/types/user.type";
+import type { TBookmark } from "../utils/types/bookmark.type";
 
 module.exports = class BookmarkService {
 	library;
