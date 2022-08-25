@@ -1,7 +1,7 @@
 import type { AnyKeys, FilterQuery, Model, UpdateQuery } from "mongoose"
 
-export default class MongooseLib<T> {
-	model: Model<T>;
+export default class MongooseLib<T> implements IDbLib {
+	model;
 	constructor(model: Model<T>) {
 		this.model = model;
 	}
