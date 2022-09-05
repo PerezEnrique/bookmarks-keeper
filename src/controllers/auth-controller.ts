@@ -1,6 +1,5 @@
 import express from "express";
 import passport from "passport";
-import boom from "@hapi/boom";
 import auth from "../middlewares/auth";
 import validation from "../middlewares/validation-handler";
 import { createUser } from "../utils/validation-schemas/users-validation-schemas";
@@ -34,13 +33,12 @@ router.get("/current-user", auth, async (req, res, next) => {
 //full path: /api/auth/login
 //method: post
 //desc: authenticates user
-
 router.post(
 	"/login",
 	validation(createUser),
 	passport.authenticate("local", { session: false }),
 	(req, res) => {
-		const user = req.user as TUser;
+		const user = req.user as TUser; //req.user was setted by passport at this point
 		const token = user.generateAuthToken();
 		const userToReturn = {
 			_id: user._id,

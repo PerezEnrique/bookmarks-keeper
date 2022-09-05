@@ -9,6 +9,8 @@ const validateWithJoi = (data: CreateUserDTO, schema: ObjectSchema) => {
 	return null;
 }
 
+//We wrap the middleware inside a function to be able to receive the schema as an argument
+//This is because the inner request handler has only req, res and next as params
 const validationHandler = (schema: ObjectSchema) => {
 	const wrappedValidationHandler: RequestHandler = (req, res, next) => {
 		const validationError = validateWithJoi(req.body, schema);
