@@ -2,7 +2,7 @@ import boom from "@hapi/boom";
 import MongooseLib from "../lib/mongoose-lib";
 import PasswordEncrypter from "../lib/password-encrypter-lib"; 
 import User from "../models/users-model";
-import type { TUser } from "../utils/types/user.type";
+import type { TUser, TUserDTO } from "../utils/types/user.type";
 
 export default class UsersService {
 	library;
@@ -22,7 +22,7 @@ export default class UsersService {
 		return this.library.getOne({query});
 	}
 
-	async createUser({ username, password}: TUser) {
+	async createUser({ username, password}: TUserDTO) {
 		const usernameAlreadyExist = await this.library.getOne({ username });
 		if (usernameAlreadyExist)
 			throw boom.badRequest("An user with provided username already exists");
@@ -31,7 +31,7 @@ export default class UsersService {
 		return await this.library.create({ username, password: encriptedPassword });
 	}
 
-	async updateUser(id: string, { username, password }: TUser) {
+	async updateUser(id: string, { username, password }: TUserDTO) {
 		const user = await this.library.getById(id);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 

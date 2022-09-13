@@ -8,4 +8,4 @@ export type TUser = BaseModel & {
     generateAuthToken(): string
 }
 
-export type CreateUserDTO = Omit<TUser, "_id" | "createdAt" | "updatedAt" | "bookmarks">;
+export type TUserDTO = Omit<TUser, "_id" | "createdAt" | "updatedAt" | "bookmarks">;
