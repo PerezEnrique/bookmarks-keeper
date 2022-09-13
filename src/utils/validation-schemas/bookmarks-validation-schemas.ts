@@ -1,15 +1,13 @@
-const Joi = require("joi");
+import Joi from "joi";
 
-const addBookmark = Joi.object({
+export const addBookmark = Joi.object({
 	name: Joi.string().max(50).required(),
 	url: Joi.string().uri({ allowQuerySquareBrackets: true }).required(),
 	tags: Joi.array().items(Joi.string().max(50)),
 });
 
-const editBookmark = Joi.object({
+export const editBookmark = Joi.object({
 	name: Joi.string().max(50).empty(""),
 	url: Joi.string().uri({ allowQuerySquareBrackets: true }).empty(""),
 	tags: Joi.array().items(Joi.string().max(50).empty("")),
 });
-
-module.exports = { addBookmark, editBookmark };
