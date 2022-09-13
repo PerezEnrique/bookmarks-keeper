@@ -4,9 +4,9 @@ import MongooseLib from "../lib/mongoose-lib";
 import User from "../models/users-model";
 import Bookmark from "../models/bookmarks-model";
 import type {TUser} from "../utils/types/user.type";
-import type { TBookmark } from "../utils/types/bookmark.type";
+import type { TBookmark, TBookmarkDTO } from "../utils/types/bookmark.type";
 
-module.exports = class BookmarkService {
+export default class BookmarkService {
 	library;
 	constructor() {
 		this.library = new MongooseLib<TUser>(User);
@@ -21,7 +21,7 @@ module.exports = class BookmarkService {
 		return { bookmarks };
 	}
 
-	async addBookmark(userId: string, bookmark: TBookmark) {
+	async addBookmark(userId: string, bookmark: TBookmarkDTO) {
 		const { images, title, description } = await getLinkPreview(bookmark.url) as any;
 
 		const newBookmark = new Bookmark({
@@ -34,7 +34,7 @@ module.exports = class BookmarkService {
 		return await this.library.update(userId, { $push: { bookmarks: newBookmark } });
 	}
 
-	async editBookmark(userId: string, bookmarkId: string, { name, url, tags }: TBookmark) {
+	async editBookmark(userId: string, bookmarkId: string, { name, url, tags }: TBookmarkDTO) {
 		const user = await this.library.getById(userId);
 		if (!user) throw boom.notFound("Cound't find user with provided id");
 

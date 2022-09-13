@@ -8,3 +8,5 @@ export type TBookmark = BaseModel & {
     imageUrl: string
     tags: string[]
 }
+
+export type TBookmarkDTO = Omit<TBookmark, "title" | "description" | "imageUrl">;
