@@ -1,9 +1,9 @@
 import boom from "@hapi/boom";
 import { RequestHandler } from "express";
 import type { ObjectSchema } from "joi";
-import { CreateUserDTO } from "../utils/types/user.type";
+import { TUserDTO } from "../utils/types/user.type";
 
-const validateWithJoi = (data: CreateUserDTO, schema: ObjectSchema) => {
+const validateWithJoi = (data: TUserDTO, schema: ObjectSchema) => {
 	const { error } = schema.validate(data, { abortEarly: false });
 	if (error) return error.message.replace(/"/g, "");
 	return null;
