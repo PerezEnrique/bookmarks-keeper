@@ -1,11 +1,10 @@
-const router = require("express").Router();
-const auth = require("../middlewares/auth");
-const validation = require("../middlewares/validation-handler");
-const {
-	addBookmark,
-	editBookmark,
-} = require("../utils/validation-schemas/bookmarks-validation-schemas");
-const BookmarksService = require("../services/bookmarks-service");
+import express from "express";
+import auth from "../middlewares/auth";
+import validation from "../middlewares/validation-handler";
+import { addBookmark, editBookmark } from "../utils/validation-schemas/bookmarks-validation-schemas"
+import BookmarksService from "../services/bookmarks-service";
+import type { ITokenPayload } from "../utils/interfaces/ITokenPayload";
+const router = express.Router();
 const service = new BookmarksService();
 
 //full path: /api/bookmarks
@@ -13,9 +12,10 @@ const service = new BookmarksService();
 //desc: gets bookmarks by tag
 router.get("/byTag", auth, async (req, res, next) => {
 	const {
-		user: { sub: userId },
+		user,
 		body: { tag },
 	} = req;
+	const userId = (user as ITokenPayload).sub;
 
 	try {
 		const bookmarks = await service.getBookmarksByTag(userId, tag);
@@ -30,9 +30,10 @@ router.get("/byTag", auth, async (req, res, next) => {
 //desc: adds bookmark to user's bookmark list
 router.post("/", auth, validation(addBookmark), async (req, res, next) => {
 	const {
-		user: { sub: userId },
+		user,
 		body,
 	} = req;
+	const userId = (user as ITokenPayload).sub;
 
 	try {
 		const updatedUser = await service.addBookmark(userId, body);
@@ -48,9 +49,10 @@ router.post("/", auth, validation(addBookmark), async (req, res, next) => {
 router.put("/:id", auth, validation(editBookmark), async (req, res, next) => {
 	const {
 		params: { id: bookmarkId },
-		user: { sub: userId },
+		user,
 		body,
 	} = req;
+	const userId = (user as ITokenPayload).sub;
 
 	try {
 		const updatedUser = await service.editBookmark(userId, bookmarkId, body);
@@ -66,8 +68,9 @@ router.put("/:id", auth, validation(editBookmark), async (req, res, next) => {
 router.delete("/:id", auth, async (req, res, next) => {
 	const {
 		params: { id: bookmarkId },
-		user: { sub: userId },
+		user,
 	} = req;
+	const userId = (user as ITokenPayload).sub;
 
 	try {
 		const updatedUser = await service.removeBookmark(userId, bookmarkId);
@@ -77,4 +80,4 @@ router.delete("/:id", auth, async (req, res, next) => {
 	}
 });
 
-module.exports = router;
+export default router;

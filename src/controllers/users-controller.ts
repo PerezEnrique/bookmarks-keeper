@@ -1,11 +1,11 @@
-const router = require("express").Router();
-const auth = require("../middlewares/auth");
-const validation = require("../middlewares/validation-handler");
-const {
-	createUser,
-	updateUser,
-} = require("../utils/validation-schemas/users-validation-schemas");
-const UsersService = require("../services/users-service");
+import express from "express";
+import auth from "../middlewares/auth";
+import validation from "../middlewares/validation-handler";
+import { createUser, updateUser } from "../utils/validation-schemas/users-validation-schemas";
+import UsersService from "../services/users-service";
+import type { TUser } from "../utils/types/user.type";
+import type { ITokenPayload } from "../utils/interfaces/ITokenPayload";
+const router = express.Router()
 const service = new UsersService();
 
 //full path: /api/users/
@@ -15,7 +15,7 @@ router.post("/", validation(createUser), async (req, res, next) => {
 	const { body } = req;
 
 	try {
-		const createdUser = await service.createUser(body);
+		const createdUser = await service.createUser(body) as TUser;
 		const token = createdUser.generateAuthToken();
 		const userToReturn = {
 			_id: createdUser._id,
@@ -36,10 +36,8 @@ router.post("/", validation(createUser), async (req, res, next) => {
 //method: put
 //desc: updates user's info
 router.put("/", auth, validation(updateUser), async (req, res, next) => {
-	const {
-		user: { sub: userId },
-		body,
-	} = req;
+	const { user, body } = req;
+	const userId = (user as ITokenPayload).sub;
 
 	try {
 		const updatedUser = await service.updateUser(userId, body);
@@ -73,4 +71,4 @@ router.delete("/:id", auth, async (req, res, next) => {
 	}
 });
 
-module.exports = router;
+export default router;

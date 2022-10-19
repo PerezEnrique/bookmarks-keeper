@@ -1,6 +1,6 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
-const bookmarkSchema = new mongoose.Schema(
+export const bookmarkSchema = new mongoose.Schema(
 	{
 		name: { type: String, required: true, maxlength: 50 },
 		url: { type: String, required: true, minlength: 4 },
@@ -12,6 +12,5 @@ const bookmarkSchema = new mongoose.Schema(
 	{ timestamps: true }
 );
 
-const Bookmark = mongoose.model("Bookmark", bookmarkSchema);
+export default mongoose.model("Bookmark", bookmarkSchema);
 
-module.exports = { bookmarkSchema, Bookmark };
