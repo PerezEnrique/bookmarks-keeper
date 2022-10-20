@@ -21,6 +21,8 @@ them by category. That's why I decided to build my own bookmark keeper
 app. For that, I used the MERN stack, but divided the project in API and
 [client](https://github.com/PerezEnrique/bookmarks-keeper-client).
 
+Update: I recently migrate this project to typescript! Give it a look
+
 ### Backend key features
 
 - It utilizes the [link-preview-js](https://www.npmjs.com/package/link-preview-js) npm library by Oscar Franco,
@@ -30,6 +32,7 @@ app. For that, I used the MERN stack, but divided the project in API and
 
 ### Technologies
 
+- Typescript
 - Node.js
 - Express.js
 - Mongoose
@@ -49,14 +52,14 @@ After running `npm install` to install the app dependencies, check the .env.exam
 To install app dependencies.
 
     npm install
-
-To start development server
-
-    npm run dev
+    
+To build the application
+    
+    npm build
 
 to start the application
 
-    npm start
+    npm start (This will trigger prestart script, which subsequently calls npm build)
 
 [Back To The Top](#bookmarks-keeper-backend)
 
