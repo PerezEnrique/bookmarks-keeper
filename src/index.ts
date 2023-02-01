@@ -7,7 +7,12 @@ import router from "./router";
 import { wrapError, errorHandler } from "./middlewares/error-handlers";
 
 const app = express();
-const { nodeEnv, port, clientOrigin } = appCofig;
+const { nodeEnv, port, clientOrigin, jwtPrivateKey } = appCofig;
+
+if(!jwtPrivateKey){
+	console.log("Fatal error: JWT private key was not definned");
+	process.exit(1);
+}
 
 connectDB();
 app.use(
