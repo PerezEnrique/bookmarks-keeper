@@ -1,10 +1,9 @@
-import {Application} from "express";
-import auth from './controllers/auth-controller';
-import users from './controllers/users-controller';
-import bookmarks from './controllers/bookmarks-controller';
+import { Application } from "express";
+import AuthController from "./controllers/auth-controller";
+import UsersService from "./services/users-service";
+import UsersController from "./controllers/users-controller";
 
 export default (app: Application) => {
-	app.use('/api/auth', auth);
-	app.use('/api/users', users);
-	app.use('/api/bookmarks', bookmarks);
+  app.use("/api/auth", new AuthController(new UsersService()).router);
+  app.use("/api/users", new UsersController(new UsersService()).router);
 };
