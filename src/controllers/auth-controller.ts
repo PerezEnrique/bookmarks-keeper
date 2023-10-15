@@ -1,13 +1,14 @@
 import express, { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import auth from "../middlewares/auth";
-import validation from "../middlewares/validation-handler";
-import { createUser } from "../utils/validation-schemas/users-validation-schemas";
-import { userDto } from "../utils/dtos";
-import User from "../domain/entities/user.entity";
 import AuthTokenGenerator, {
   tokenPayload,
 } from "../utils/libraries/auth-token-generator";
+import validation, {
+  createUserSchema,
+} from "../middlewares/validation-handler";
+import User from "../domain/entities/user.entity";
+import { userDto } from "../utils/dtos";
 import UsersServiceInterface from "../domain/services/users-service-interface";
 
 export default class AuthController {
@@ -25,7 +26,7 @@ export default class AuthController {
 
     this.router.post(
       "/login",
-      validation(createUser),
+      validation(createUserSchema),
       passport.authenticate("local", { session: false }),
       this.login
     );
@@ -61,7 +62,7 @@ export default class AuthController {
   //full path: /api/auth/login
   //method: post
   //desc: authenticates user
-  private async login(req: Request, res: Response) {
+  private login(req: Request, res: Response) {
     const user = req.user as User; //req.user was setted by passport at this point
 
     const token = this.authTokenGenerator.generate(user);

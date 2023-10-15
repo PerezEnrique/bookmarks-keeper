@@ -1,20 +1,17 @@
 import express, { NextFunction, Request, Response } from "express";
 import auth from "../middlewares/auth";
-import validation from "../middlewares/validation-handler";
-import {
-  createUser,
-  updateUser,
-} from "../utils/validation-schemas/users-validation-schemas";
-import {
-  addBookmark,
-  editBookmark,
-} from "../utils/validation-schemas/bookmarks-validation-schemas";
 import AuthTokenGenerator, {
   tokenPayload,
 } from "../utils/libraries/auth-token-generator";
-import UsersServiceInterface from "../domain/services/users-service-interface";
-import { userDto } from "../utils/dtos";
 import User from "../domain/entities/user.entity";
+import { userDto } from "../utils/dtos";
+import UsersServiceInterface from "../domain/services/users-service-interface";
+import validation, {
+  addBookmarkSchema,
+  createUserSchema,
+  editBookmarkSchema,
+  updateUserSchema,
+} from "../middlewares/validation-handler";
 
 export default class UsersController {
   private readonly userService: UsersServiceInterface;
@@ -32,20 +29,20 @@ export default class UsersController {
     this.router.put(
       "/bookmarks/:id",
       auth,
-      validation(editBookmark),
+      validation(editBookmarkSchema),
       this.editBookmark
     );
 
     this.router.post(
       "/bookmarks",
       auth,
-      validation(addBookmark),
+      validation(addBookmarkSchema),
       this.addBookmark
     );
 
-    this.router.post("/", validation(createUser), this.createUser);
-	
-    this.router.put("/", auth, validation(updateUser), this.updateUser);
+    this.router.post("/", validation(createUserSchema), this.createUser);
+
+    this.router.put("/", auth, validation(updateUserSchema), this.updateUser);
   }
 
   //full path: /api/users/bookmarks
