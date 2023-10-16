@@ -7,7 +7,7 @@ import AuthTokenGenerator, {
 import validation, {
   createUserSchema,
 } from "../middlewares/validation-handler";
-import User from "../domain/entities/user.entity";
+import User from "../domain/entities/User";
 import { userDto } from "../utils/dtos";
 import UsersServiceInterface from "../domain/services/users-service-interface";
 

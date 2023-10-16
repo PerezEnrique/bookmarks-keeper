@@ -1,4 +1,4 @@
-import Bookmark from "./bookmark.entity";
+import Bookmark from "./Bookmark";
 
 export default class User {
   readonly id: string;

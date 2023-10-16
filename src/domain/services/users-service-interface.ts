@@ -1,5 +1,5 @@
-import Bookmark from "../entities/bookmark.entity";
-import User from "../entities/user.entity";
+import Bookmark from "../entities/Bookmark";
+import User from "../entities/User";
 
 export default interface UsersServiceInterface {
   AddBookmark(userId: string, bookmark: Bookmark): Promise<User>;

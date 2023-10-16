@@ -1,11 +1,11 @@
 import boom from "@hapi/boom";
 import { getLinkPreview } from "link-preview-js";
 
-import User from "../domain/entities/user.entity";
+import User from "../domain/entities/User";
 import userModel from "../utils/db-models/users-model";
 import UsersServiceInterface from "../domain/services/users-service-interface";
 import PasswordEncrypter from "../utils/libraries/password-encrypter";
-import Bookmark from "../domain/entities/bookmark.entity";
+import Bookmark from "../domain/entities/Bookmark";
 
 export default class UsersService implements UsersServiceInterface {
   private readonly connection;

@@ -1,5 +1,5 @@
-import Bookmark from "../domain/entities/bookmark.entity";
-import User from "../domain/entities/user.entity";
+import Bookmark from "../domain/entities/Bookmark";
+import User from "../domain/entities/User";
 
 export type bookmarkDto = Bookmark;
 

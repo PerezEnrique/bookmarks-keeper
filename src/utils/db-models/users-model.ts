@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import User from "../../domain/entities/user.entity";
+import User from "../../domain/entities/User";
 import { bookmarkSchema } from "./bookmarks-model";
 
 const userSchema = new mongoose.Schema<User>({
