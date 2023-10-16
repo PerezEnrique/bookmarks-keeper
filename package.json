@@ -7,7 +7,7 @@
 		"build": "rimraf build && tsc",
 		"start": "node build/index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"prestart" : "npm run build"
+		"prestart": "npm run build"
 	},
 	"engines": {
 		"node": "14.18.1"
@@ -16,15 +16,14 @@
 	"license": "ISC",
 	"dependencies": {
 		"@hapi/boom": "^10.0.0",
-		"@types/passport-local": "^1.0.34",
-		"bcrypt": "^5.1.0",
+		"@types/passport-local": "^1.0.36",
+		"bcrypt": "^5.1.1",
 		"cors": "^2.8.5",
 		"dotenv": "^16.0.3",
 		"express": "^4.18.2",
-		"express-async-errors": "^3.1.1",
 		"joi": "^17.6.3",
-		"jsonwebtoken": "^8.5.1",
-		"link-preview-js": "^3.0.4",
+		"jsonwebtoken": "^9.0.2",
+		"link-preview-js": "^3.0.5",
 		"mongoose": "^6.6.5",
 		"passport": "^0.6.0",
 		"passport-local": "^1.0.0",
@@ -33,9 +32,9 @@
 	"devDependencies": {
 		"@types/bcrypt": "^5.0.0",
 		"@types/cors": "^2.8.12",
-		"@types/jsonwebtoken": "^8.5.9",
-		"@types/passport": "^1.0.11",
-		"nodemon": "^2.0.20",
+		"@types/jsonwebtoken": "^9.0.3",
+		"@types/passport": "^1.0.13",
+		"nodemon": "^2.0.22",
 		"typescript": "^4.8.4"
 	}
 }
