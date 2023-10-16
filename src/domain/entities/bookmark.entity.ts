@@ -6,7 +6,6 @@ export default class Bookmark {
   name: string;
   tags: string[];
   title: string;
-  updatedAt: Date;
   url: string;
 
   constructor(
@@ -17,7 +16,6 @@ export default class Bookmark {
     name: string,
     tags: string[],
     title: string,
-    updatedAt: Date,
     url: string
   ) {
     this.id = id;
@@ -27,7 +25,6 @@ export default class Bookmark {
     this.name = name;
     this.tags = tags;
     this.title = title;
-    this.updatedAt = updatedAt;
     this.url = url;
   }
 }
