@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import appConfig from "../../config/app-config";
-import User from "../../domain/entities/User";
+import appConfig from "../config/app-config";
+import User from "../domain/entities/User";
 
 export type tokenPayload = {
     sub: string

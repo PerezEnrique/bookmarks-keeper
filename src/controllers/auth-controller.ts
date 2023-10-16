@@ -3,7 +3,7 @@ import passport from "passport";
 import auth from "../middlewares/auth";
 import AuthTokenGenerator, {
   tokenPayload,
-} from "../utils/libraries/auth-token-generator";
+} from "../libraries/auth-token-generator";
 import validation, {
   createUserSchema,
 } from "../middlewares/validation-handler";

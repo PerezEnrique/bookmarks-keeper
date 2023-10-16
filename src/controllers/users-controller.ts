@@ -2,7 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import auth from "../middlewares/auth";
 import AuthTokenGenerator, {
   tokenPayload,
-} from "../utils/libraries/auth-token-generator";
+} from "../libraries/auth-token-generator";
 import User from "../domain/entities/User";
 import { userDto } from "../utils/dtos";
 import UsersServiceInterface from "../domain/services/users-service-interface";
