@@ -2,7 +2,7 @@ import Bookmark from "../entities/Bookmark";
 import User from "../entities/User";
 
 export default interface UsersServiceInterface {
-  AddBookmark(userId: string, bookmark: Bookmark): Promise<User>;
+  addBookmark(userId: string, bookmark: Bookmark): Promise<User>;
   create(user: User): Promise<User>;
   editBookmark(userId: string, bookmarkId: string, bookmark: Bookmark) : Promise<User>;
   getById(id: string): Promise<User | null>;

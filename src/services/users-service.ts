@@ -15,7 +15,7 @@ export default class UsersService implements UsersServiceInterface {
     this.passwordEncrypter = new PasswordEncrypter();
   }
 
-  AddBookmark = async (userId: string, bookmark: Bookmark): Promise<User> => {
+  addBookmark = async (userId: string, bookmark: Bookmark): Promise<User> => {
     const user = await this.connection.findById(userId);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 

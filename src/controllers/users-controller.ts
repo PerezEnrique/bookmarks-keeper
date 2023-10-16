@@ -57,7 +57,7 @@ export default class UsersController {
     const userId = (user as tokenPayload).sub;
 
     try {
-      const updatedUser = await this.userService.AddBookmark(userId, body);
+      const updatedUser = await this.userService.addBookmark(userId, body);
 
       const userToReturn = this.mapUserToDto(updatedUser);
 
