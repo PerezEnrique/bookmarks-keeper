@@ -152,7 +152,7 @@ export default class UsersController {
     }
   };
 
-  //full path: /api/bookmarks/:id
+  //full path: /api/users/bookmarks/:id
   //method: delete
   //desc: remove one of user's bookmarks
   private removeBookmark = async (

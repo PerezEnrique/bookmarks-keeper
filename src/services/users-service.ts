@@ -25,7 +25,15 @@ export default class UsersService implements UsersServiceInterface {
 
     bookmark.imageUrl = images[0] ? images[0] : "not available";
     bookmark.title = title ? title : "not available";
-    bookmark.description = description ? description : "not available";
+    if(!description) {
+      bookmark.description = "not available"
+    }
+    else if(description?.length <= 255) {
+      bookmark.description = description;
+    }
+    else {
+      bookmark.description = (description as string).substring(0, 252).concat("...");
+    }
 
     user.bookmarks.push(bookmark);
 
@@ -66,7 +74,16 @@ export default class UsersService implements UsersServiceInterface {
       bookmark.url = url;
       bookmark.imageUrl = images[0] ? images[0] : "not available";
       bookmark.title = title ? title : "not available";
-      bookmark.description = description ? description : "not available";
+      
+      if(!description) {
+        bookmark.description = "not available"
+      }
+      else if(description?.length <= 255) {
+        bookmark.description = description;
+      }
+      else {
+        bookmark.description = (description as string).substring(0, 252).concat("...");
+      }
     }
 
     if (name) {
@@ -95,7 +112,7 @@ export default class UsersService implements UsersServiceInterface {
     const user = await this.connection.findById(userId);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 
-    user.bookmarks.filter((bookmark) => bookmark.id != bookmarkId);
+    user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.id != bookmarkId);
 
     return await user.save();
   };

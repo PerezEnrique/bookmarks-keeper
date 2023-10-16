@@ -2,7 +2,7 @@ import Bookmark from "./Bookmark";
 
 export default class User {
   readonly id: string;
-  readonly bookmarks: Bookmark[];
+  bookmarks: Bookmark[];
   password: string;
   username: string;
 
