@@ -21,7 +21,7 @@ export default class AuthController {
     this.setUpRoutes();
   }
 
-  private setUpRoutes() {
+  private setUpRoutes = () => {
     this.router.get("/current-user", auth, this.getCurrentUser);
 
     this.router.post(
@@ -30,16 +30,16 @@ export default class AuthController {
       passport.authenticate("local", { session: false }),
       this.login
     );
-  }
+  };
 
   //full path: /api/auth/current-user
   //method: post
   //desc: authenticates user
-  private async getCurrentUser(
+  private getCurrentUser = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     try {
       //req.user must have the token data at this point
       const currentUser = await this.userService.getById(
@@ -57,12 +57,12 @@ export default class AuthController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   //full path: /api/auth/login
   //method: post
   //desc: authenticates user
-  private login(req: Request, res: Response) {
+  private login = (req: Request, res: Response) => {
     const user = req.user as User; //req.user was setted by passport at this point
 
     const token = this.authTokenGenerator.generate(user);
@@ -76,5 +76,5 @@ export default class AuthController {
       .header("authorization", `Bearer ${token}`)
       .header("access-control-expose-headers", "authorization")
       .json(userToReturn);
-  }
+  };
 }

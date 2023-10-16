@@ -15,7 +15,7 @@ export default class UsersService implements UsersServiceInterface {
     this.passwordEncrypter = new PasswordEncrypter();
   }
 
-  async AddBookmark(userId: string, bookmark: Bookmark): Promise<User> {
+  AddBookmark = async (userId: string, bookmark: Bookmark): Promise<User> => {
     const user = await this.connection.findById(userId);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 
@@ -30,9 +30,9 @@ export default class UsersService implements UsersServiceInterface {
     user.bookmarks.push(bookmark);
 
     return await user.save();
-  }
+  };
 
-  async create({ username, password }: User): Promise<User> {
+  create = async ({ username, password }: User): Promise<User> => {
     const usernameAlreadyExist = await this.connection.findOne({ username });
     if (usernameAlreadyExist)
       throw boom.badRequest("An user with provided username already exists");
@@ -45,13 +45,13 @@ export default class UsersService implements UsersServiceInterface {
       username,
       password: encriptedPassword,
     }).save();
-  }
+  };
 
-  async editBookmark(
+  editBookmark = async (
     userId: string,
     bookmarkId: string,
     { name, url, tags }: Bookmark
-  ): Promise<User> {
+  ): Promise<User> => {
     const user = await this.connection.findById(userId);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 
@@ -78,26 +78,29 @@ export default class UsersService implements UsersServiceInterface {
     }
 
     return await user.save();
-  }
+  };
 
-  async getById(id: string): Promise<User | null> {
+  getById = async (id: string): Promise<User | null> => {
     return await this.connection.findById(id);
-  }
+  };
 
-  async getByUsername(username: string): Promise<User | null> {
+  getByUsername = async (username: string): Promise<User | null> => {
     return this.connection.findOne({ username });
-  }
+  };
 
-  async removeBookmark(userId: string, bookmarkId: string): Promise<User> {
+  removeBookmark = async (
+    userId: string,
+    bookmarkId: string
+  ): Promise<User> => {
     const user = await this.connection.findById(userId);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 
     user.bookmarks.filter((bookmark) => bookmark.id != bookmarkId);
 
     return await user.save();
-  }
+  };
 
-  async update(id: string, { username, password }: User): Promise<User> {
+  update = async (id: string, { username, password }: User): Promise<User> => {
     const user = await this.connection.findById(id);
     if (!user) throw boom.notFound("Cound't find user with provided id");
 
@@ -112,5 +115,5 @@ export default class UsersService implements UsersServiceInterface {
     if (password)
       user.password = await this.passwordEncrypter.encryptAsync(password);
     return await user.save();
-  }
+  };
 }

@@ -23,7 +23,7 @@ export default class UsersController {
     this.setUpRoutes();
   }
 
-  private setUpRoutes() {
+  private setUpRoutes = () => {
     this.router.delete("/bookmarks/:id", auth, this.removeBookmark);
 
     this.router.put(
@@ -43,12 +43,16 @@ export default class UsersController {
     this.router.post("/", validation(createUserSchema), this.createUser);
 
     this.router.put("/", auth, validation(updateUserSchema), this.updateUser);
-  }
+  };
 
   //full path: /api/users/bookmarks
   //method: post
   //desc: adds bookmark to user's bookmark list
-  private async addBookmark(req: Request, res: Response, next: NextFunction) {
+  private addBookmark = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const { user, body } = req;
     const userId = (user as tokenPayload).sub;
 
@@ -61,12 +65,16 @@ export default class UsersController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   //full path: /api/users
   //method: post
   //desc: creates new user
-  private async createUser(req: Request, res: Response, next: NextFunction) {
+  private createUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const { body } = req;
 
     try {
@@ -84,12 +92,16 @@ export default class UsersController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   //full path: /api/users/bookmarks/:id
   //method: put
   //desc: edit one of user's bookmarks
-  private async editBookmark(req: Request, res: Response, next: NextFunction) {
+  private editBookmark = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const {
       params: { id: bookmarkId },
       user,
@@ -110,12 +122,16 @@ export default class UsersController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   //full path: /api/users
   //method: put
   //desc: updates user's info
-  private async updateUser(req: Request, res: Response, next: NextFunction) {
+  private updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     const { user, body } = req;
     const userId = (user as tokenPayload).sub;
 
@@ -134,16 +150,16 @@ export default class UsersController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
   //full path: /api/bookmarks/:id
   //method: delete
   //desc: remove one of user's bookmarks
-  private async removeBookmark(
+  private removeBookmark = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ) {
+  ) => {
     const {
       params: { id: bookmarkId },
       user,
@@ -162,13 +178,13 @@ export default class UsersController {
     } catch (err) {
       next(err);
     }
-  }
+  };
 
-  private mapUserToDto(user: User): userDto {
+  private mapUserToDto = (user: User): userDto => {
     return {
       id: user.id,
       username: user.username,
       bookmarks: user.bookmarks,
     };
-  }
+  };
 }
