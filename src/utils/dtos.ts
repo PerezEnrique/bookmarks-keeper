@@ -3,9 +3,9 @@ import User from "../domain/entities/User";
 
 export type bookmarkDto = Bookmark;
 
-export type createBookmarkDto = Omit<
+export type addBookmarkDto = Omit<
   Bookmark,
-  "title" | "description" | "imageUrl"
+  "id" | "title" | "description" | "imageUrl"
 >;
 
 export type createUserDto = Omit<User, "id" | "password" | "bookmarks">;
