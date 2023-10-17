@@ -1,7 +1,7 @@
 import Joi, { ObjectSchema } from "joi";
 import boom from "@hapi/boom";
 import { RequestHandler } from "express";
-import { createUserDto } from "../utils/dtos";
+import { userCredentialsDto } from "../utils/dtos";
 
 //Users schemas
 export const createUserSchema = Joi.object({
@@ -27,7 +27,7 @@ export const editBookmarkSchema = Joi.object({
 	tags: Joi.array().items(Joi.string().max(50).empty("")),
 });
 
-const validateWithJoi = (data: createUserDto, schema: ObjectSchema) => {
+const validateWithJoi = (data: userCredentialsDto, schema: ObjectSchema) => {
 	const { error } = schema.validate(data, { abortEarly: false });
 	if (error) return error.message.replace(/"/g, "");
 	return null;
