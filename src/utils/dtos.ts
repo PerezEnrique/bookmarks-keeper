@@ -5,10 +5,10 @@ export type bookmarkDto = Bookmark;
 
 export type bookmarkInputDto = Omit<
   Bookmark,
-  "id" | "title" | "description" | "imageUrl"
+  "id" | "createdAt" | "description" | "imageUrl" | "title"
 >;
 
-export type userCredentialsDto = Omit<User, "id" | "password" | "bookmarks">;
+export type userCredentialsDto = Omit<User, "id" | "bookmarks">;
 
 export type userDto = {
   id: string;
