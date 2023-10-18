@@ -3,8 +3,6 @@ import auth from "../middlewares/auth";
 import AuthTokenGenerator, {
   tokenPayload,
 } from "../libraries/auth-token-generator";
-import User from "../domain/entities/User";
-import { userDto } from "../utils/dtos";
 import UsersServiceInterface from "../domain/services/users-service-interface";
 import validation, {
   addBookmarkSchema,
@@ -12,6 +10,7 @@ import validation, {
   editBookmarkSchema,
   updateUserSchema,
 } from "../middlewares/validation-handler";
+import { mapUserToDto } from "../utils/helpers";
 
 export default class UsersController {
   private readonly userService: UsersServiceInterface;
@@ -59,7 +58,7 @@ export default class UsersController {
     try {
       const updatedUser = await this.userService.addBookmark(userId, body);
 
-      const userToReturn = this.mapUserToDto(updatedUser);
+      const userToReturn = mapUserToDto(updatedUser);
 
       res.status(201).json(userToReturn);
     } catch (err) {
@@ -82,7 +81,7 @@ export default class UsersController {
 
       const token = this.authTokenGenerator.generate(createdUser);
 
-      const userToReturn = this.mapUserToDto(createdUser);
+      const userToReturn = mapUserToDto(createdUser);
 
       res
         .status(201)
@@ -116,7 +115,7 @@ export default class UsersController {
         body
       );
 
-      const userToReturn = this.mapUserToDto(updatedUser);
+      const userToReturn = mapUserToDto(updatedUser);
 
       res.status(201).json(userToReturn);
     } catch (err) {
@@ -140,7 +139,7 @@ export default class UsersController {
 
       const token = this.authTokenGenerator.generate(updatedUser);
 
-      const userToReturn = this.mapUserToDto(updatedUser);
+      const userToReturn = mapUserToDto(updatedUser);
 
       res
         .status(201)
@@ -172,19 +171,11 @@ export default class UsersController {
         bookmarkId
       );
 
-      const userToReturn = this.mapUserToDto(updatedUser);
+      const userToReturn = mapUserToDto(updatedUser);
 
       res.status(200).json(userToReturn);
     } catch (err) {
       next(err);
     }
-  };
-
-  private mapUserToDto = (user: User): userDto => {
-    return {
-      id: user.id,
-      username: user.username,
-      bookmarks: user.bookmarks,
-    };
   };
 }

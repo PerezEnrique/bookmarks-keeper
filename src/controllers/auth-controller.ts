@@ -10,6 +10,7 @@ import validation, {
 import User from "../domain/entities/User";
 import { userDto } from "../utils/dtos";
 import UsersServiceInterface from "../domain/services/users-service-interface";
+import { mapUserToDto } from "../utils/helpers";
 
 export default class AuthController {
   private readonly userService: UsersServiceInterface;
@@ -47,11 +48,7 @@ export default class AuthController {
       );
       if (!currentUser) return;
 
-      const userToReturn: userDto = {
-        id: currentUser.id,
-        username: currentUser.username,
-        bookmarks: currentUser.bookmarks,
-      };
+      const userToReturn: userDto = mapUserToDto(currentUser);
 
       res.json(userToReturn);
     } catch (err) {
@@ -67,11 +64,7 @@ export default class AuthController {
 
     const token = this.authTokenGenerator.generate(user);
 
-    const userToReturn: userDto = {
-      id: user.id,
-      username: user.username,
-      bookmarks: user.bookmarks,
-    };
+    const userToReturn: userDto = mapUserToDto(user);
     res
       .header("authorization", `Bearer ${token}`)
       .header("access-control-expose-headers", "authorization")
