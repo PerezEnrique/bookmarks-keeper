@@ -1,53 +1,136 @@
 import boom from "@hapi/boom";
-import MongooseLib from "../lib/mongoose-lib";
-import PasswordEncrypter from "../lib/password-encrypter-lib"; 
-import User from "../models/users-model";
-import type { TUser, TUserDTO } from "../utils/types/user.type";
+import { getLinkPreview } from "link-preview-js";
 
-export default class UsersService {
-	library;
-	constructor() {
-		this.library = new MongooseLib<TUser>(User);
-	}
+import User from "../domain/entities/User";
+import userModel from "../utils/db-models/users-model";
+import UsersServiceInterface from "../domain/services/users-service-interface";
+import PasswordEncrypter from "../libraries/password-encrypter";
+import Bookmark from "../domain/entities/Bookmark";
 
-	getAllUsers() {
-		return this.library.get();
-	}
+export default class UsersService implements UsersServiceInterface {
+  private readonly connection;
+  private readonly passwordEncrypter;
+  constructor() {
+    this.connection = userModel;
+    this.passwordEncrypter = new PasswordEncrypter();
+  }
 
-	getUserById(id: string) {
-		return this.library.getById(id);
-	}
+  addBookmark = async (userId: string, bookmark: Bookmark): Promise<User> => {
+    const user = await this.connection.findById(userId);
+    if (!user) throw boom.notFound("Cound't find user with provided id");
 
-	getUserByQuery(query: Partial<TUser>) {
-		return this.library.getOne({query});
-	}
+    const { images, title, description } = (await getLinkPreview(
+      bookmark.url
+    )) as any;
 
-	async createUser({ username, password}: TUserDTO) {
-		const usernameAlreadyExist = await this.library.getOne({ username });
-		if (usernameAlreadyExist)
-			throw boom.badRequest("An user with provided username already exists");
+    bookmark.imageUrl = images[0] ? images[0] : "not available";
+    bookmark.title = title ? title : "not available";
+    if(!description) {
+      bookmark.description = "not available"
+    }
+    else if(description?.length <= 255) {
+      bookmark.description = description;
+    }
+    else {
+      bookmark.description = (description as string).substring(0, 252).concat("...");
+    }
 
-		const encriptedPassword =  await PasswordEncrypter.encrypt(password);
-		return await this.library.create({ username, password: encriptedPassword });
-	}
+    user.bookmarks.push(bookmark);
 
-	async updateUser(id: string, { username, password }: TUserDTO) {
-		const user = await this.library.getById(id);
-		if (!user) throw boom.notFound("Cound't find user with provided id");
+    return await user.save();
+  };
 
-		if (username && username !== user.username) {
-			const usernameAlreadyExist = await this.library.getOne({ username });
-			if (usernameAlreadyExist)
-				throw boom.badRequest("An user with provided username already exists");
+  create = async ({ username, password }: User): Promise<User> => {
+    const usernameAlreadyExist = await this.connection.findOne({ username });
+    if (usernameAlreadyExist)
+      throw boom.badRequest("An user with provided username already exists");
 
-			user.username = username;
-		}
-		if (password) user.password = await PasswordEncrypter.encrypt(password);
-		return await user.save();
-	}
+    const encriptedPassword = await this.passwordEncrypter.encryptAsync(
+      password
+    );
 
-	async deleteUser(id: string) {
-		await this.library.delete(id);
-		return { message: "User successfully removed" };
-	}
-};
+    return await new this.connection({
+      username,
+      password: encriptedPassword,
+    }).save();
+  };
+
+  editBookmark = async (
+    userId: string,
+    bookmarkId: string,
+    { name, url, tags }: Bookmark
+  ): Promise<User> => {
+    const user = await this.connection.findById(userId);
+    if (!user) throw boom.notFound("Cound't find user with provided id");
+
+    const bookmark = user.bookmarks.find(
+      (bookmark) => bookmark.id == bookmarkId
+    ); //using "==" because objectId is not a string
+    if (!bookmark)
+      throw boom.notFound("Couldn't find bookmark with provided id");
+
+    if (url) {
+      const { images, title, description } = (await getLinkPreview(url)) as any;
+      bookmark.url = url;
+      bookmark.imageUrl = images[0] ? images[0] : "not available";
+      bookmark.title = title ? title : "not available";
+      
+      if(!description) {
+        bookmark.description = "not available"
+      }
+      else if(description?.length <= 255) {
+        bookmark.description = description;
+      }
+      else {
+        bookmark.description = (description as string).substring(0, 252).concat("...");
+      }
+    }
+
+    if (name) {
+      bookmark.name = name;
+    }
+
+    if (tags) {
+      bookmark.tags = tags;
+    }
+
+    return await user.save();
+  };
+
+  getById = async (id: string): Promise<User | null> => {
+    return await this.connection.findById(id);
+  };
+
+  getByUsername = async (username: string): Promise<User | null> => {
+    return this.connection.findOne({ username });
+  };
+
+  removeBookmark = async (
+    userId: string,
+    bookmarkId: string
+  ): Promise<User> => {
+    const user = await this.connection.findById(userId);
+    if (!user) throw boom.notFound("Cound't find user with provided id");
+
+    user.bookmarks = user.bookmarks.filter((bookmark) => bookmark.id != bookmarkId);
+
+    return await user.save();
+  };
+
+  update = async (id: string, { username, password }: User): Promise<User> => {
+    const user = await this.connection.findById(id);
+    if (!user) throw boom.notFound("Cound't find user with provided id");
+
+    if (username && username !== user.username) {
+      const usernameAlreadyExist = await this.connection.findOne({ username });
+      if (usernameAlreadyExist)
+        throw boom.badRequest("An user with provided username already exists");
+
+      user.username = username;
+    }
+
+    if (password)
+      user.password = await this.passwordEncrypter.encryptAsync(password);
+    return await user.save();
+  };
+}

@@ -1,74 +1,181 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import auth from "../middlewares/auth";
-import validation from "../middlewares/validation-handler";
-import { createUser, updateUser } from "../utils/validation-schemas/users-validation-schemas";
-import UsersService from "../services/users-service";
-import type { TUser } from "../utils/types/user.type";
-import type { ITokenPayload } from "../utils/interfaces/ITokenPayload";
-const router = express.Router()
-const service = new UsersService();
+import AuthTokenGenerator, {
+  tokenPayload,
+} from "../libraries/auth-token-generator";
+import UsersServiceInterface from "../domain/services/users-service-interface";
+import validation, {
+  addBookmarkSchema,
+  createUserSchema,
+  editBookmarkSchema,
+  updateUserSchema,
+} from "../middlewares/validation-handler";
+import { mapUserToDto } from "../utils/helpers";
 
-//full path: /api/users/
-//method: post
-//desc: creates new user
-router.post("/", validation(createUser), async (req, res, next) => {
-	const { body } = req;
+export default class UsersController {
+  private readonly userService: UsersServiceInterface;
+  private readonly authTokenGenerator = new AuthTokenGenerator();
+  readonly router = express.Router();
 
-	try {
-		const createdUser = await service.createUser(body) as TUser;
-		const token = createdUser.generateAuthToken();
-		const userToReturn = {
-			_id: createdUser._id,
-			username: createdUser.username,
-			bookmarks: createdUser.bookmarks,
-		};
-		res
-			.status(201)
-			.header("authorization", `Bearer ${token}`)
-			.header("access-control-expose-headers", "authorization")
-			.json(userToReturn);
-	} catch (err) {
-		next(err);
-	}
-});
+  constructor(userService: UsersServiceInterface) {
+    this.userService = userService;
+    this.setUpRoutes();
+  }
 
-//full path: /api/users
-//method: put
-//desc: updates user's info
-router.put("/", auth, validation(updateUser), async (req, res, next) => {
-	const { user, body } = req;
-	const userId = (user as ITokenPayload).sub;
+  private setUpRoutes = () => {
+    this.router.delete("/bookmarks/:id", auth, this.removeBookmark);
 
-	try {
-		const updatedUser = await service.updateUser(userId, body);
-		const token = updatedUser.generateAuthToken();
-		const userToReturn = {
-			_id: updatedUser._id,
-			username: updatedUser.username,
-			bookmarks: updatedUser.bookmarks,
-		};
-		res
-			.status(201)
-			.header("authorization", `Bearer ${token}`)
-			.header("access-control-expose-headers", "authorization")
-			.json(userToReturn);
-	} catch (err) {
-		next(err);
-	}
-});
+    this.router.put(
+      "/bookmarks/:id",
+      auth,
+      validation(editBookmarkSchema),
+      this.editBookmark
+    );
 
-//full path: /api/users/:id
-//method: delete
-//desc: deletes an user
-router.delete("/:id", auth, async (req, res, next) => {
-	const { id: userId } = req.params;
+    this.router.post(
+      "/bookmarks",
+      auth,
+      validation(addBookmarkSchema),
+      this.addBookmark
+    );
 
-	try {
-		const result = await service.deleteUser(userId);
-		res.status(200).json(result);
-	} catch (err) {
-		next(err);
-	}
-});
+    this.router.post("/", validation(createUserSchema), this.createUser);
 
-export default router;
+    this.router.put("/", auth, validation(updateUserSchema), this.updateUser);
+  };
+
+  //full path: /api/users/bookmarks
+  //method: post
+  //desc: adds bookmark to user's bookmark list
+  private addBookmark = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { user, body } = req;
+    const userId = (user as tokenPayload).sub;
+
+    try {
+      const updatedUser = await this.userService.addBookmark(userId, body);
+
+      const userToReturn = mapUserToDto(updatedUser);
+
+      res.status(201).json(userToReturn);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  //full path: /api/users
+  //method: post
+  //desc: creates new user
+  private createUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { body } = req;
+
+    try {
+      const createdUser = await this.userService.create(body);
+
+      const token = this.authTokenGenerator.generate(createdUser);
+
+      const userToReturn = mapUserToDto(createdUser);
+
+      res
+        .status(201)
+        .header("authorization", `Bearer ${token}`)
+        .header("access-control-expose-headers", "authorization")
+        .json(userToReturn);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  //full path: /api/users/bookmarks/:id
+  //method: put
+  //desc: edit one of user's bookmarks
+  private editBookmark = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const {
+      params: { id: bookmarkId },
+      user,
+      body,
+    } = req;
+    const userId = (user as tokenPayload).sub;
+
+    try {
+      const updatedUser = await this.userService.editBookmark(
+        userId,
+        bookmarkId,
+        body
+      );
+
+      const userToReturn = mapUserToDto(updatedUser);
+
+      res.status(201).json(userToReturn);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  //full path: /api/users
+  //method: put
+  //desc: updates user's info
+  private updateUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const { user, body } = req;
+    const userId = (user as tokenPayload).sub;
+
+    try {
+      const updatedUser = await this.userService.update(userId, body);
+
+      const token = this.authTokenGenerator.generate(updatedUser);
+
+      const userToReturn = mapUserToDto(updatedUser);
+
+      res
+        .status(201)
+        .header("authorization", `Bearer ${token}`)
+        .header("access-control-expose-headers", "authorization")
+        .json(userToReturn);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  //full path: /api/users/bookmarks/:id
+  //method: delete
+  //desc: remove one of user's bookmarks
+  private removeBookmark = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    const {
+      params: { id: bookmarkId },
+      user,
+    } = req;
+    const userId = (user as tokenPayload).sub;
+
+    try {
+      const updatedUser = await this.userService.removeBookmark(
+        userId,
+        bookmarkId
+      );
+
+      const userToReturn = mapUserToDto(updatedUser);
+
+      res.status(200).json(userToReturn);
+    } catch (err) {
+      next(err);
+    }
+  };
+}
