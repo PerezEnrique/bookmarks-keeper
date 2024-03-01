@@ -59,7 +59,7 @@ To build the application
 
 to start the application
 
-    npm start (This will trigger prestart script, which subsequently calls npm build)
+    npm start
 
 [Back To The Top](#bookmarks-keeper-backend)
 
